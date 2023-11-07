@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "simple-blog"
+version = "0.1.0"
+description = "A simple blog on python"
+authors = ["Nickita Rusanov <nipe322@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
