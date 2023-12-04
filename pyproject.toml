@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.12"
 fastapi = "^0.104.1"
 uvicorn = {extras = ["standart"], version = "^0.24.0.post1"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.23"}
+asyncpg = "^0.29.0"
 
 
 [build-system]
