@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from database import database
 import models
-from config import settings
+import user
 
 
 @asynccontextmanager
