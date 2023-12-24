@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from database import database
 import models
-import user
+from user.router import router as user_router
 
 
 @asynccontextmanager
@@ -15,6 +15,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(title='Simple Blog', lifespan=lifespan)
+
+app.include_router(user_router, prefix='/user')
 
 
 if __name__ == '__main__':
