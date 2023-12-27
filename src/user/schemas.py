@@ -14,6 +14,7 @@ class UserOut(UserBase):
     id: int
 
 
-class UserDTO(UserBase):
-    password: str
-    id: int
+class UserUpdate(UserBase):
+    email: EmailStr | None = None
+    username: str | None = None
+    password: str | None = None
