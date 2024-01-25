@@ -16,6 +16,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title='Simple Blog', lifespan=lifespan)
 
+@app.get('/')
+def index():
+    return {'msg': 'API works properly'}
+
 app.include_router(user_router, prefix='/user')
 
 

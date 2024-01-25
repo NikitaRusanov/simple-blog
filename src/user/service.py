@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
-from .models import User
-from .schemas import UserIn, UserUpdate
+from user.models import User
+from user.schemas import UserIn, UserUpdate
 
 
 async def get_users(session: AsyncSession) -> list[User]:

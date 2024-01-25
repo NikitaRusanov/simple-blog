@@ -1,39 +1,33 @@
-import asyncio
-
 import pytest
+from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
-from src.config import settings
 from src import Base
-
-
-url = f'postgresql+asyncpg://{settings.db_user}:{settings.db_pass}@{settings.db_host}:{settings.db_port}/{settings.db_name}'
-
-@pytest.fixture(scope='session')
-def event_lopp():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
+from src.main import app
+from src.config import settings
 
 
 @pytest.fixture(scope='session')
-def engine():
-    engine = create_async_engine(url)
-    print(url)
-    yield engine
-    engine.sync_engine.dispose()
+async def client():
+    async with AsyncClient(app=app, base_url='http://test') as async_client:
+        yield async_client
 
 
-@pytest.fixture
-async def async_session(engine):
-    async with AsyncSession(engine) as session:
-        yield session
+db_url = (f'postgresql+asyncpg://'
+          f'{settings.db_user}:{settings.db_pass}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+engine = create_async_engine(db_url)
 
 
-@pytest.fixture(scope='function', autouse=True)
-async def setup_db(engine):
-    async with engine.begin() as conenction:
-        await conenction.run_sync(Base.metadata.drop_all)
-    yield
-    async with engine.begin() as conenction:
-        await conenction.run_sync(Base.metadata.create_all)
+@pytest.fixture(scope='session', autouse=True)
+async def create_tables():
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+        yield
+        await connection.run_sync(Base.metadata.drop_all)
+
+
+@pytest.fixture(scope='function')
+async def test_db():
+    async_session = AsyncSession(engine)
+    yield async_session
+    await async_session.close()
