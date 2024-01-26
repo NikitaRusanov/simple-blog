@@ -20,3 +20,13 @@ async def user_test_samples(test_db: AsyncSession, create_tables):
     test_db.add_all(samples)
     await test_db.commit()
     yield samples
+
+
+@pytest.fixture()
+async def get_user(test_db: AsyncSession, create_tables):
+    async def _get_user(id: int):
+        return await test_db.get(User, id)
+    yield _get_user
+    await test_db.close()
+        
+
