@@ -27,10 +27,13 @@ async def create_user(session: AsyncSession, user_in: UserIn) -> User:
 
 
 async def update_user(session: AsyncSession, user: User, user_update: UserUpdate) -> User:
+    data = user_update.model_dump(exclude_unset=True)
+    if not data:
+        return user
     result = await session.execute(
         update(User)
         .where(User.id == user.id)
-        .values(user_update.model_dump(exclude_unset=True))
+        .values(data)
         .returning(User)
         )
     user = result.scalar_one()

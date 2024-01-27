@@ -25,7 +25,9 @@ async def user_test_samples(test_db: AsyncSession, create_tables):
 @pytest.fixture()
 async def get_user(test_db: AsyncSession, create_tables):
     async def _get_user(id: int):
-        return await test_db.get(User, id)
+        user = await test_db.get(User, id)
+        await test_db.refresh(user)
+        return user
     yield _get_user
     await test_db.close()
         
