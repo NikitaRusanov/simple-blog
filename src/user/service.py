@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
-from .models import User
-from .schemas import UserIn, UserUpdate
+from user.models import User
+from user.schemas import UserIn, UserUpdate
 
 
 async def get_users(session: AsyncSession) -> list[User]:
@@ -27,10 +27,13 @@ async def create_user(session: AsyncSession, user_in: UserIn) -> User:
 
 
 async def update_user(session: AsyncSession, user: User, user_update: UserUpdate) -> User:
+    data = user_update.model_dump(exclude_unset=True)
+    if not data:
+        return user
     result = await session.execute(
         update(User)
         .where(User.id == user.id)
-        .values(user_update.model_dump(exclude_unset=True))
+        .values(data)
         .returning(User)
         )
     user = result.scalar_one()

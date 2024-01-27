@@ -22,7 +22,7 @@ async def get_users(session: AsyncSession = Depends(database.scoped_session_depe
     return await service.get_users(session=session)
 
 
-@router.post('/', response_model=schemas.UserOut)
+@router.post('/', response_model=schemas.UserOut, status_code=201)
 async def create_user(user_in: schemas.UserIn, session: AsyncSession = Depends(database.scoped_session_dependency)):
     new_user = await service.create_user(session=session, user_in=user_in)
     return new_user
