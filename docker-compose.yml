@@ -6,6 +6,10 @@ services:
       - .env
     ports:
       - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 0.3s
+      retries: 5
   app:
     build:
       context: .
@@ -13,6 +17,7 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     env_file:
       - .env
