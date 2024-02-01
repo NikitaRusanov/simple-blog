@@ -1,4 +1,4 @@
-FROM python:3.12.1-slim-bullseye
+FROM python:3.12.1
 
 WORKDIR /app
 
@@ -14,3 +14,6 @@ COPY src ./src/
 
 COPY tests ./tests/
 
+ENTRYPOINT [ "pytest" ]
+
+CMD [ "-v" ]
