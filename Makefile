@@ -1,8 +1,8 @@
-DC="docker-compose"
-DC_FILE="docker-compose.yml"
-ENV_FILE=".env"
-TEST_FILE="docker-compose-test.yml"
-TEST_ENV_FILE=".test.env"
+DC=docker-compose
+DC_FILE=docker-compose.yml
+ENV_FILE=.env
+TEST_DC_FILE=docker-compose-test.yml
+TEST_ENV_FILE=.test.env
 
 
 run:
@@ -15,4 +15,4 @@ logs:
 	${DC} -f ${DC_FILE} logs -f
 
 run-tests:
-	${DC} --env-file=${TEST_ENV_FILE} -f ${TEST_FILE} up --attach test-runner && ${DC} -f ${TEST_FILE} down -v
+	${DC} --env-file=${TEST_ENV_FILE} -f ${TEST_DC_FILE} up --attach test-runner && ${DC} -f ${TEST_DC_FILE} down -v
