@@ -9,10 +9,10 @@ run:
 	${DC} --env-file=${ENV_FILE} -f ${DC_FILE} up -d ${ARGS}
 
 stop:
-	${DC} -f ${DC_FILE} down
+	${DC} -f ${DC_FILE} down -v
 
 logs:
 	${DC} -f ${DC_FILE} logs -f
 
 run-tests:
-	${DC} --env-file=${TEST_ENV_FILE} -f ${TEST_FILE} up --attach test-runner && ${DC} -f ${TEST_FILE} down
+	${DC} --env-file=${TEST_ENV_FILE} -f ${TEST_FILE} up --attach test-runner && ${DC} -f ${TEST_FILE} down -v
