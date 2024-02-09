@@ -1,0 +1,17 @@
+FROM python:3.12.1-slim-bookworm
+
+WORKDIR /app
+
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+COPY poetry.lock pyproject.toml ./
+
+RUN pip install poetry && poetry install
+
+COPY src ./src/
+
+COPY tests ./tests/
+
+ENTRYPOINT [ "pytest" ]
+
+CMD [ "-v" ]
