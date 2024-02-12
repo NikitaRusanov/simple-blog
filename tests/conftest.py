@@ -16,16 +16,20 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 async def client():
-    async with AsyncClient(app=app, base_url='http://test', follow_redirects=True) as async_client:
+    async with AsyncClient(
+        app=app, base_url="http://test", follow_redirects=True
+    ) as async_client:
         yield async_client
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def engine():
-    db_url = (f'postgresql+asyncpg://'
-          f'{settings.db_user}:{settings.db_pass}@{settings.db_host}:{settings.db_port}/{settings.db_name}')
+    db_url = (
+        f"postgresql+asyncpg://"
+        f"{settings.db_user}:{settings.db_pass}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
+    )
     engine = create_async_engine(db_url, future=True)
     yield engine
     engine.sync_engine.dispose()
@@ -34,13 +38,13 @@ def engine():
 @pytest.fixture()
 async def create_tables(engine):
     async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)   
+        await connection.run_sync(Base.metadata.create_all)
     yield
     async with engine.begin() as connection:
         await connection.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 async def test_db(engine):
     async_session = AsyncSession(engine, expire_on_commit=False)
     yield async_session

@@ -14,18 +14,17 @@ async def lifespan(app: FastAPI):
 
     yield
 
-app = FastAPI(title='Simple Blog', lifespan=lifespan)
 
-@app.get('/')
+app = FastAPI(title="Simple Blog", lifespan=lifespan)
+
+
+@app.get("/")
 def index():
-    return {'msg': 'API works properly'}
-
-app.include_router(user_router, prefix='/user')
+    return {"msg": "API works properly"}
 
 
-if __name__ == '__main__':
-    uvicorn.run('main:app')
-
-         
+app.include_router(user_router, prefix="/user")
 
 
+if __name__ == "__main__":
+    uvicorn.run("main:app")

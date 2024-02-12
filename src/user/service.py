@@ -22,20 +22,19 @@ async def create_user(session: AsyncSession, user_in: UserIn) -> User:
     user = User(**(user_in.model_dump()))
     session.add(user)
     await session.commit()
-    
+
     return user
 
 
-async def update_user(session: AsyncSession, user: User, user_update: UserUpdate) -> User:
+async def update_user(
+    session: AsyncSession, user: User, user_update: UserUpdate
+) -> User:
     data = user_update.model_dump(exclude_unset=True)
     if not data:
         return user
     result = await session.execute(
-        update(User)
-        .where(User.id == user.id)
-        .values(data)
-        .returning(User)
-        )
+        update(User).where(User.id == user.id).values(data).returning(User)
+    )
     user = result.scalar_one()
     await session.commit()
     return user

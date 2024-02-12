@@ -10,9 +10,9 @@ from src import User
 async def user_test_samples(test_db: AsyncSession, create_tables):
     samples = [
         User(
-            email=f'test_email_{num}@mail.com',
-            username=f'test_user_{num}',
-            password=f'test_password_{num}'
+            email=f"test_email_{num}@mail.com",
+            username=f"test_user_{num}",
+            password=f"test_password_{num}",
         )
         for num in range(1, 4)
     ]
@@ -28,7 +28,6 @@ async def get_user(test_db: AsyncSession, create_tables):
         test_db.expire_all()
         user = await test_db.get(User, id)
         return user
+
     yield _get_user
     await test_db.close()
-        
-
