@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from database import database
 import models
 from user.router import router as user_router
+from auth.router import router as auth_router
 
 
 @asynccontextmanager
@@ -24,6 +25,7 @@ def index():
 
 
 app.include_router(user_router, prefix="/user")
+app.include_router(auth_router, prefix="/auth")
 
 
 if __name__ == "__main__":

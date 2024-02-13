@@ -30,5 +30,4 @@ async def validate_user(
 async def login(user: user_models.User = Depends(validate_user)):
     return {
         "username": user.username,
-        "msg": "aboba"
     }
