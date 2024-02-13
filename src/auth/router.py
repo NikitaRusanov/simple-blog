@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import user.models as user_models
 import auth.service as auth_service
 import database
+import auth.utils as auth_utils
 
 
 router = APIRouter(tags=["Auth"])
@@ -28,6 +29,13 @@ async def validate_user(
 
 @router.post("/login/")
 async def login(user: user_models.User = Depends(validate_user)):
-    return {
+    token_payload = {
+        "sub": user.id,
         "username": user.username,
+        "email": user.email,
+    }
+    token = auth_utils.encode_token(token_payload)
+    return {
+        "token": token,
+        "token_type": "Bearer"
     }

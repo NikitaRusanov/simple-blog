@@ -24,7 +24,7 @@ class Settings(BaseSettings):
 
     debug: bool = False
 
-    auth_settings = AuthSettings()
+    auth_settings: AuthSettings = AuthSettings()
 
 
 settings = Settings()
