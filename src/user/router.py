@@ -1,7 +1,6 @@
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException,
     status,
 )
 from fastapi.responses import JSONResponse
@@ -12,7 +11,7 @@ import user.schemas as schemas
 from database import database
 from user import dependencies
 from user import models
-
+import auth.service as auth_service
 
 router = APIRouter(tags=["Users"])
 
@@ -31,6 +30,13 @@ async def create_user(
 ):
     new_user = await service.create_user(session=session, user_in=user_in)
     return new_user
+
+
+@router.get("/me", response_model=schemas.UserOut)
+async def get_current_user(
+    user: models.User = Depends(auth_service.get_user_from_token),
+):
+    return user
 
 
 @router.get("/{user_id}", response_model=schemas.UserOut)
