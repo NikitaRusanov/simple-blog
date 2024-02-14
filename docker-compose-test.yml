@@ -16,6 +16,7 @@ services:
       dockerfile: ./Dockerfile.test
     volumes:
       - ./tests:/app/tests
+      - ./certs:/app/src/certs
     depends_on:
       database:
         condition: service_healthy
