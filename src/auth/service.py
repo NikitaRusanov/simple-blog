@@ -30,7 +30,7 @@ async def validate_user(
 ) -> user_models.User | None:
 
     user = await get_user_by_name(username, session)
-    if not user or user.password != password:
+    if not user or not auth_utils.check_password(password, user.password):
         return
     return user
 

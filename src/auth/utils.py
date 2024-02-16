@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 import jwt
 
+import bcrypt
+
 from config import settings
 
 
@@ -26,3 +28,13 @@ def decode_token(
 ) -> dict:
     data = jwt.decode(jwt=token, key=public_key, algorithms=[algorithm])
     return data
+
+
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt()
+    pwd_hashed = bcrypt.hashpw(password.encode(), salt)
+    return pwd_hashed.decode()
+
+
+def check_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed_password.encode())
