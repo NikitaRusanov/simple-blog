@@ -6,13 +6,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_DIR = Path(__file__).parent.resolve()
 
 
-class AuthSettings(BaseModel):
-    private_key_path: Path = BASE_DIR / "certs" / "private.pem"
-    public_key_path: Path = BASE_DIR / "certs" / "public.pem"
-    algorithm: str = "RS256"
-    token_expire_minutes: int = 15
-
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -24,7 +17,10 @@ class Settings(BaseSettings):
 
     debug: bool = False
 
-    auth_settings: AuthSettings = AuthSettings()
+    private_key_path: Path = BASE_DIR / "certs" / "private.pem"
+    public_key_path: Path = BASE_DIR / "certs" / "public.pem"
+    algorithm: str = "RS256"
+    token_expire_minutes: int = 15
 
 
 settings = Settings()

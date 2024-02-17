@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src import User
 
+import src.auth.utils as auth_utils
+
 
 @pytest.fixture()
 async def user_test_samples(test_db: AsyncSession, create_tables):
@@ -31,3 +33,25 @@ async def get_user(test_db: AsyncSession, create_tables):
 
     yield _get_user
     await test_db.close()
+
+
+@pytest.fixture()
+async def test_auth_headers(test_db: AsyncSession, create_tables):
+    test_user = User(
+        email="token_test_user@mail.com",
+        username="token_test_user",
+        password="test_password",
+    )
+    test_db.add(test_user)
+    await test_db.commit()
+
+    test_token = auth_utils.encode_token(
+        payload={
+            "sub": test_user.id,
+            "username": test_user.username,
+            "email": test_user.email,
+        }
+    )
+
+    headers = {"Authorization": f"Bearer {test_token}"}
+    yield headers
