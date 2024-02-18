@@ -55,3 +55,18 @@ async def test_no_body_create(
 
     assert resp.status_code == 422
     assert resp.json().get("detail")[0]["type"] == "missing"
+
+
+async def test_update_user_without_auth(client: AsyncClient):
+    resp = await client.patch("/user/123")
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Not authenticated"
+
+
+async def test_update_user_with_bad_auth(client: AsyncClient, test_auth_headers):
+    test_auth_headers["Authorization"] += "a"
+    resp = await client.patch("/user/123", headers=test_auth_headers)
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Invalid token"
