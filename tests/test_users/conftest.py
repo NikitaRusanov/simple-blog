@@ -36,7 +36,7 @@ async def get_user(test_db: AsyncSession, create_tables):
 
 
 @pytest.fixture()
-async def test_auth_headers(test_db: AsyncSession, create_tables):
+async def create_one_user(test_db: AsyncSession, create_tables):
     test_user = User(
         email="token_test_user@mail.com",
         username="token_test_user",
@@ -44,12 +44,16 @@ async def test_auth_headers(test_db: AsyncSession, create_tables):
     )
     test_db.add(test_user)
     await test_db.commit()
+    yield test_user
 
+
+@pytest.fixture()
+async def test_auth_headers(create_one_user: User):
     test_token = auth_utils.encode_token(
         payload={
-            "sub": test_user.id,
-            "username": test_user.username,
-            "email": test_user.email,
+            "sub": create_one_user.id,
+            "username": create_one_user.username,
+            "email": create_one_user.email,
         }
     )
 
