@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 
 import jwt
 
@@ -14,7 +14,7 @@ def encode_token(
     expire_time: int = settings.token_expire_minutes,
 ) -> str:
     to_encode = payload.copy()
-    now = datetime.utcnow()
+    now = datetime.now(UTC)
     to_encode.update(exp=now + timedelta(minutes=expire_time), iat=now)
 
     token = jwt.encode(payload=to_encode, key=private_key, algorithm=algorithm)
