@@ -21,3 +21,18 @@ async def test_delete_not_found_user(
 
     assert resp.status_code == 404
     assert resp.json().get("detail") == f"User {test_user_id} not found"
+
+
+async def test_delete_without_auth(client: AsyncClient):
+    resp = await client.delete("/user/1")
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Not authenticated"
+
+
+async def test_delete_with_bad_auth(client: AsyncClient, test_auth_headers):
+    test_auth_headers["Authorization"] += "a"
+    resp = await client.delete("/user/1", headers=test_auth_headers)
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Invalid token"
