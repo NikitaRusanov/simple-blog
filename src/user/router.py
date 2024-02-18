@@ -42,8 +42,8 @@ async def get_current_user(
 
 @router.get("/{user_id}", response_model=schemas.UserOut)
 async def get_user(
-    user: schemas.UserOut = Depends(dependencies.get_user_by_id),
     current_user=Depends(auth_service.get_user_from_token),
+    user: schemas.UserOut = Depends(dependencies.get_user_by_id),
 ):
     return user
 
@@ -52,8 +52,8 @@ async def get_user(
 async def update_user(
     user_update: schemas.UserUpdate,
     session: AsyncSession = Depends(database.scoped_session_dependency),
-    user: models.User = Depends(dependencies.get_user_by_id),
     current_user=Depends(auth_service.get_user_from_token),
+    user: models.User = Depends(dependencies.get_user_by_id),
 ):
     return await service.update_user(
         session=session, user=user, user_update=user_update
