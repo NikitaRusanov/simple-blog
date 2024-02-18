@@ -17,6 +17,7 @@ services:
     volumes:
       - ./tests:/app/tests
       - ./certs:/app/src/certs
+      - ./src:/app/src
     depends_on:
       database:
         condition: service_healthy
