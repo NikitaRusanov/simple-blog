@@ -63,8 +63,8 @@ async def update_user(
 @router.delete("/{user_id}")
 async def delete_user(
     session: AsyncSession = Depends(database.scoped_session_dependency),
-    user: models.User = Depends(dependencies.get_user_by_id),
     current_user=Depends(auth_service.get_user_from_token),
+    user: models.User = Depends(dependencies.get_user_by_id),
 ):
     await service.delete_user(session, user)
     return JSONResponse(content={"detail": "OK"}, status_code=status.HTTP_200_OK)
