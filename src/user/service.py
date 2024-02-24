@@ -3,6 +3,7 @@ from sqlalchemy import select, update
 
 from user.models import User
 from user.schemas import UserIn, UserUpdate
+import auth.utils as auth_utils
 
 
 async def get_users(session: AsyncSession) -> list[User]:
@@ -20,6 +21,7 @@ async def get_user(session: AsyncSession, user_id: int) -> User | None:
 
 async def create_user(session: AsyncSession, user_in: UserIn) -> User:
     user = User(**(user_in.model_dump()))
+    user.password = auth_utils.hash_password(user.password)
     session.add(user)
     await session.commit()
 

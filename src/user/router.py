@@ -1,7 +1,6 @@
 from fastapi import (
     APIRouter,
     Depends,
-    HTTPException,
     status,
 )
 from fastapi.responses import JSONResponse
@@ -12,7 +11,7 @@ import user.schemas as schemas
 from database import database
 from user import dependencies
 from user import models
-
+import auth.service as auth_service
 
 router = APIRouter(tags=["Users"])
 
@@ -20,6 +19,7 @@ router = APIRouter(tags=["Users"])
 @router.get("/", response_model=list[schemas.UserOut])
 async def get_users(
     session: AsyncSession = Depends(database.scoped_session_dependency),
+    current_user=Depends(auth_service.get_user_from_token),
 ):
     return await service.get_users(session=session)
 
@@ -33,8 +33,18 @@ async def create_user(
     return new_user
 
 
+@router.get("/me", response_model=schemas.UserOut)
+async def get_current_user(
+    user: models.User = Depends(auth_service.get_user_from_token),
+):
+    return user
+
+
 @router.get("/{user_id}", response_model=schemas.UserOut)
-async def get_user(user: schemas.UserOut = Depends(dependencies.get_user_by_id)):
+async def get_user(
+    current_user=Depends(auth_service.get_user_from_token),
+    user: schemas.UserOut = Depends(dependencies.get_user_by_id),
+):
     return user
 
 
@@ -42,6 +52,7 @@ async def get_user(user: schemas.UserOut = Depends(dependencies.get_user_by_id))
 async def update_user(
     user_update: schemas.UserUpdate,
     session: AsyncSession = Depends(database.scoped_session_dependency),
+    current_user=Depends(auth_service.get_user_from_token),
     user: models.User = Depends(dependencies.get_user_by_id),
 ):
     return await service.update_user(
@@ -52,6 +63,7 @@ async def update_user(
 @router.delete("/{user_id}")
 async def delete_user(
     session: AsyncSession = Depends(database.scoped_session_dependency),
+    current_user=Depends(auth_service.get_user_from_token),
     user: models.User = Depends(dependencies.get_user_by_id),
 ):
     await service.delete_user(session, user)

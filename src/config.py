@@ -1,5 +1,9 @@
-from pydantic import Field
+from pathlib import Path
+
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BASE_DIR = Path(__file__).parent.parent.resolve()
 
 
 class Settings(BaseSettings):
@@ -13,5 +17,11 @@ class Settings(BaseSettings):
 
     debug: bool = False
 
+    private_key_path: Path = BASE_DIR / "certs" / "private.pem"
+    public_key_path: Path = BASE_DIR / "certs" / "public.pem"
+    algorithm: str = "RS256"
+    token_expire_minutes: int = 15
 
+
+print(BASE_DIR)
 settings = Settings()

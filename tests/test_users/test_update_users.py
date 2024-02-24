@@ -19,13 +19,17 @@ from httpx import AsyncClient
         ({}),
     ],
 )
-async def test_update_user(test_data, client: AsyncClient, user_test_samples, get_user):
+async def test_update_user(
+    test_data, client: AsyncClient, user_test_samples, get_user, test_auth_headers
+):
     test_user = user_test_samples[0].__dict__.copy()
     test_user.pop("_sa_instance_state")
     test_user_id = test_user.get("id")
     test_user.update(test_data)
 
-    resp = await client.patch(f"/user/{test_user_id}", json=test_data)
+    resp = await client.patch(
+        f"/user/{test_user_id}", json=test_data, headers=test_auth_headers
+    )
     assert resp.status_code == 200
 
     db_user = await get_user(test_user_id)
@@ -35,17 +39,34 @@ async def test_update_user(test_data, client: AsyncClient, user_test_samples, ge
     assert db_user.password == test_user["password"]
 
 
-async def test_user_not_found(client: AsyncClient, create_tables):
-    test_user_id = 1
-    resp = await client.patch(f"/user/{test_user_id}")
+async def test_user_not_found(client: AsyncClient, create_tables, test_auth_headers):
+    test_user_id = 123
+    resp = await client.patch(f"/user/{test_user_id}", headers=test_auth_headers)
 
     assert resp.status_code == 404
     assert resp.json().get("detail") == f"User {test_user_id} not found"
 
 
-async def test_no_body_create(client: AsyncClient, user_test_samples):
+async def test_no_body_create(
+    client: AsyncClient, user_test_samples, test_auth_headers
+):
     test_user_id = 1
-    resp = await client.patch(f"/user/{test_user_id}")
+    resp = await client.patch(f"/user/{test_user_id}", headers=test_auth_headers)
 
     assert resp.status_code == 422
     assert resp.json().get("detail")[0]["type"] == "missing"
+
+
+async def test_update_user_without_auth(client: AsyncClient):
+    resp = await client.patch("/user/123")
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Not authenticated"
+
+
+async def test_update_user_with_bad_auth(client: AsyncClient, test_auth_headers):
+    test_auth_headers["Authorization"] += "a"
+    resp = await client.patch("/user/123", headers=test_auth_headers)
+
+    assert resp.status_code == 401
+    assert resp.json().get("detail") == "Invalid token"

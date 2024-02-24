@@ -10,6 +10,8 @@ RUN pip install poetry && poetry install
 
 COPY src ./src/
 
+COPY certs ./certs/
+
 COPY tests ./tests/
 
 ENTRYPOINT [ "pytest" ]
