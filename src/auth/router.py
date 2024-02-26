@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Form, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import user.models as user_models
 import auth.service as auth_service
-from database import database
 import auth.utils as auth_utils
+import user.models as user_models
+from database import database
 
 
 router = APIRouter(tags=["Auth"])
@@ -19,11 +18,11 @@ async def validate_user(
     password: str = Form(),
     session: AsyncSession = Depends(database.scoped_session_dependency),
 ) -> user_models.User:
-
     if user := await auth_service.validate_user(username, password, session):
         return user
     raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong username or password"
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Wrong username or password",
     )
 
 

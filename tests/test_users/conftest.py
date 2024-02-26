@@ -1,11 +1,8 @@
-import asyncio
-
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src import User
-
 import src.auth.utils as auth_utils
+from src import User
 
 
 @pytest.fixture()

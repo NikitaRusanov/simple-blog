@@ -40,7 +40,9 @@ async def test_get_one_user(
     user_test_samples: list[User], client: AsyncClient, test_auth_headers: dict
 ):
     target_user = user_test_samples[1]
-    resp = await client.get(f"/user/{target_user.id}", headers=test_auth_headers)
+    resp = await client.get(
+        f"/user/{target_user.id}", headers=test_auth_headers
+    )
     resp_data = resp.json()
 
     assert resp_data.get("id") == target_user.id
@@ -48,7 +50,9 @@ async def test_get_one_user(
     assert resp_data.get("email") == target_user.email
 
 
-async def test_user_not_found(client: AsyncClient, create_tables, test_auth_headers):
+async def test_user_not_found(
+    client: AsyncClient, create_tables, test_auth_headers
+):
     test_user_id = 123
     resp = await client.get(f"/user/{test_user_id}", headers=test_auth_headers)
 

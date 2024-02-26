@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta, UTC
-
-import jwt
+from datetime import UTC, datetime, timedelta
 
 import bcrypt
+import jwt
 
 from config import settings
 

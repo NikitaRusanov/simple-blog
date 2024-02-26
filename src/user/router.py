@@ -1,17 +1,13 @@
-from fastapi import (
-    APIRouter,
-    Depends,
-    status,
-)
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import user.service as service
-import user.schemas as schemas
-from database import database
-from user import dependencies
-from user import models
 import auth.service as auth_service
+import user.schemas as schemas
+import user.service as service
+from database import database
+from user import dependencies, models
+
 
 router = APIRouter(tags=["Users"])
 
@@ -67,4 +63,6 @@ async def delete_user(
     user: models.User = Depends(dependencies.get_user_by_id),
 ):
     await service.delete_user(session, user)
-    return JSONResponse(content={"detail": "OK"}, status_code=status.HTTP_200_OK)
+    return JSONResponse(
+        content={"detail": "OK"}, status_code=status.HTTP_200_OK
+    )

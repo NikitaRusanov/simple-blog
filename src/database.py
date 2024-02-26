@@ -1,17 +1,16 @@
-from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_sessionmaker,
-    async_scoped_session,
-    AsyncSession,
-)
 from asyncio import current_task
 
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from config import settings
 
 
 class Database:
-
     def __init__(self, url: str, echo: bool) -> None:
         self.engine = create_async_engine(url, echo=echo)
 

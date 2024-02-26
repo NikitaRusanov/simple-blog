@@ -1,9 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
+import auth.utils as auth_utils
 from user.models import User
 from user.schemas import UserIn, UserUpdate
-import auth.utils as auth_utils
 
 
 async def get_users(session: AsyncSession) -> list[User]:

@@ -28,12 +28,18 @@ async def test_create_user(client: AsyncClient, get_user):
         ({"username": "test_user", "email": "test@mail.com"}, "missing"),
         ({"password": "test_pass", "email": "test@mail.com"}, "missing"),
         (
-            {"username": "test_user", "email": "test", "password": "test_pass"},
+            {
+                "username": "test_user",
+                "email": "test",
+                "password": "test_pass",
+            },
             "value_error",
         ),
     ],
 )
-async def test_wrong_data_create(test_data, expected_type, client: AsyncClient):
+async def test_wrong_data_create(
+    test_data, expected_type, client: AsyncClient
+):
     resp = await client.post("/user/", json=test_data)
 
     assert resp.status_code == 422

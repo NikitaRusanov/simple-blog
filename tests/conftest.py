@@ -2,11 +2,11 @@ import asyncio
 
 import pytest
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 from src import Base
-from src.main import app
 from src.config import settings
+from src.main import app
 
 
 @pytest.fixture(scope="session")

@@ -1,14 +1,14 @@
-from httpx import AsyncClient
 import pytest
+from httpx import AsyncClient
 
-from tests.test_auth.conftest import USER_DATA
 from src.auth.utils import decode_token
+from tests.test_auth.conftest import USER_DATA
 
 
 async def test_successful_login(client: AsyncClient, create_user):
     login_data = {
         "username": USER_DATA["username"],
-        "password": USER_DATA["password"]
+        "password": USER_DATA["password"],
     }
 
     resp = await client.post("/auth/login", data=login_data)
@@ -20,15 +20,17 @@ async def test_successful_login(client: AsyncClient, create_user):
     assert payload["username"] == create_user.username
 
 
-@pytest.mark.parametrize("username, password", [
-    (USER_DATA["username"], "1"),
-    ("1", USER_DATA["password"])
-])
-async def test_wrong_data_login(username, password, client: AsyncClient, create_user, ):
-    login_data = {
-        "username": username,
-        "password": password
-    }
+@pytest.mark.parametrize(
+    "username, password",
+    [(USER_DATA["username"], "1"), ("1", USER_DATA["password"])],
+)
+async def test_wrong_data_login(
+    username,
+    password,
+    client: AsyncClient,
+    create_user,
+):
+    login_data = {"username": username, "password": password}
 
     resp = await client.post("/auth/login", data=login_data)
     assert resp.status_code == 401
